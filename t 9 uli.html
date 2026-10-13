@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tugas Rutin 9 (v2) — Terminal & Preview</title>
+<style>
+:root{--bg:#f6f3ff;--fg:#1d1535;--mu:#6b6486;--cd:#fff;--bd:#ddd5f5;--ac:#7c3aed;--tb:#12101c;--tf:#7CFC9A;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e0b1a;--fg:#ece8fb;--mu:#a59fc0;--cd:#181328;--bd:#2d2547}}
+:root[data-theme="dark"]{--bg:#0e0b1a;--fg:#ece8fb;--mu:#a59fc0;--cd:#181328;--bd:#2d2547}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0 auto;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,sans-serif;padding:16px;max-width:720px}
+h1{font-size:21px;margin:0 0 4px}h2{font-size:17px;margin:22px 0 8px}
+.sub{color:var(--mu);font-size:14px}
+.bar{height:8px;background:var(--bd);border-radius:6px;overflow:hidden;margin:10px 0}
+.bar i{display:block;height:100%;width:0;background:var(--ac);transition:width .4s}
+.term{background:var(--tb);color:var(--tf);font:12.5px/1.45 monospace;border-radius:12px;padding:12px;min-height:150px;max-height:280px;overflow:auto;white-space:pre-wrap}
+.term .c{color:#fff}
+button{font:inherit;font-size:13px;padding:9px 11px;border-radius:10px;border:1px solid var(--bd);background:var(--cd);color:var(--fg);text-align:left}
+button.go{background:var(--ac);border-color:var(--ac);color:#fff}
+button:disabled{opacity:.45}
+.steps{display:grid;gap:6px;margin:8px 0}
+.card{background:var(--cd);border:1px solid var(--bd);border-radius:14px;padding:14px;margin:10px 0}
+.phone{border:6px solid var(--fg);border-radius:26px;background:var(--cd);overflow:hidden;max-width:380px;margin:10px auto}
+.url{font:12px monospace;background:var(--bg);padding:8px 10px;border-bottom:1px solid var(--bd);overflow-x:auto;white-space:nowrap}
+.pg{padding:16px;min-height:200px}
+.tabbar{display:flex;border-top:1px solid var(--bd)}
+.tabbar button{flex:1;border:0;border-radius:0;text-align:center;font-size:12px;background:var(--cd)}
+.tabbar button.on{color:var(--ac);font-weight:700}
+input{font:inherit;width:100%;box-sizing:border-box;padding:9px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--fg)}
+.li{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bd);font-size:14px}
+pre{background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:10px;overflow-x:auto;font-size:12.5px}
+details{margin:6px 0}summary{font-weight:600;padding:8px 0}
+.ok{color:#16a34a}
+</style></head><body>
+<h1>📌 Tugas Rutin 9 (v2) — Setup Laravel</h1>
+<div class="sub">Versi lain: ikuti langkah di terminal simulasi, lalu lihat hasilnya di preview "HP". Ini simulasi, bukan Laravel sungguhan.</div>
+
+<h2>1️⃣ Terminal — jalankan berurutan</h2>
+<div class="bar"><i id="pb"></i></div>
+<div class="steps" id="steps"></div>
+<div class="term" id="term"><span class="c">$ </span>pilih langkah pertama di atas…</div>
+
+<h2>2️⃣ Preview aplikasi <span class="sub" id="state">(server belum jalan)</span></h2>
+<div class="phone">
+ <div class="url" id="url">—</div>
+ <div class="pg" id="pg"><span class="sub">Jalankan <b>php artisan serve</b> dulu.</span></div>
+ <div class="tabbar" id="tb"></div>
+</div>
+
+<h2>3️⃣ Checklist requirement</h2>
+<div class="card" id="chk"></div>
+
+<h2>4️⃣ Kode & README</h2>
+<details><summary>routes/web.php</summary><pre>Route::get('/', function () {
+    return view('welcome', [
+        'name' => 'Mahasiswa',
+        'courses' => [
+            ['nama' => 'Pemrograman Web', 'sks' => 3],
+            ['nama' => 'Basis Data', 'sks' => 3],
+            ['nama' => 'Algoritma', 'sks' => 4],
+        ],
+    ]);
+});
+Route::get('/about', [PageController::class, 'about']);
+Route::get('/contact', [PageController::class, 'contact']);
+Route::get('/hello/{nama}', fn ($nama) => view('hello', compact('nama')));</pre></details>
+<details><summary>resources/views/welcome.blade.php</summary><pre>&lt;h1&gt;Halo, {{ $name }}! 👋&lt;/h1&gt;
+@foreach ($courses as $c)
+  &lt;p&gt;{{ $c['nama'] }} — {{ $c['sks'] }} SKS&lt;/p&gt;
+@endforeach</pre></details>
+<details><summary>PageController.php & Model</summary><pre>class PageController extends Controller {
+    public function about()   { return view('about'); }
+    public function contact() { return view('contact'); }
+}
+// php artisan make:model Post -m  → app/Models/Post.php + migration</pre></details>
+<details open><summary>README.md</summary><pre># TugasWeb-P9-LaravelSetup
+## Instalasi
+1. Pastikan php -v (>= 8.2), composer -V, node -v
+2. composer create-project laravel/laravel blog
+3. cd blog, buat database blog_db di phpMyAdmin
+4. Isi .env: DB_CONNECTION=mysql, DB_DATABASE=blog_db,
+   DB_USERNAME=root, DB_PASSWORD=(kosong)
+5. php artisan serve → http://127.0.0.1:8000
+
+## Struktur folder
+- app/ → Model & Controller
+- resources/views/ → View (Blade)
+- routes/web.php → daftar route
+- database/ → migrations, factories, seeders
+- public/ → document root
+- .env → konfigurasi rahasia (jangan di-commit)</pre></details>
+
+<script>
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const cmds=[
+ ['composer create-project laravel/laravel blog','Creating a "laravel/laravel" project at "./blog"\nInstalling laravel/laravel\nGenerating optimized autoload files\n   INFO  Application key set successfully.\n   INFO  Database file created (SQLite default).'],
+ ['cd blog && php artisan make:controller PageController','   INFO  Controller [app/Http/Controllers/PageController.php] created successfully.'],
+ ['php artisan make:model Post -m','   INFO  Model [app/Models/Post.php] created successfully.\n   INFO  Migration [database/migrations/…_create_posts_table.php] created successfully.'],
+ ['php artisan serve','   INFO  Server running on [http://127.0.0.1:8000].\n   Press Ctrl+C to stop the server']];
+let done=0,srv=false,route='/',q='';
+const courses=[['Pemrograman Web',3],['Basis Data',3],['Algoritma',4],['Jaringan Komputer',3],['Kalkulus',3]];
+function drawSteps(){
+ document.getElementById('steps').innerHTML=cmds.map((c,i)=>`<button class="${i===done?'go':''}" ${i!==done?'disabled':''} onclick="run(${i})">${i<done?'✔ ':(i+1)+'. '}${esc(c[0])}</button>`).join('');
+ document.getElementById('pb').style.width=(done/cmds.length*100)+'%';
+ const L=['Install Composer & buat project','Konfigurasi .env (mysql) — lihat README','artisan serve berjalan','3 route custom → Blade view','View data dinamis (array dari route)','make:controller & make:model -m','README langkah install + struktur folder','Repo TugasWeb-P9-LaravelSetup'];
+ const okIdx=[done>=1,true,done>=4,true,true,done>=3,true,true];
+ document.getElementById('chk').innerHTML=L.map((t,i)=>`<div class="${okIdx[i]?'ok':''}">${okIdx[i]?'✔':'○'} ${i+1}. ${t}</div>`).join('');
+}
+function run(i){
+ const t=document.getElementById('term');
+ t.innerHTML=(i===0?'':t.innerHTML+'\n')+`<span class="c">$ ${esc(cmds[i][0])}</span>\n${esc(cmds[i][1])}`;t.scrollTop=t.scrollHeight;
+ done=i+1;if(i===3){srv=true;document.getElementById('state').textContent='(server berjalan ✓)';draw()}drawSteps();
+}
+function nav(r){route=r;draw()}
+function draw(){
+ if(!srv)return;
+ document.getElementById('tb').innerHTML=[['/','🏠 Beranda'],['/about','ℹ️ About'],['/contact','✉️ Contact'],['/hello/{nama}','👋 Hello']].map(([r,l])=>`<button class="${r===route?'on':''}" onclick="nav('${r}')">${l}</button>`).join('');
+ const pg=document.getElementById('pg');let u='http://127.0.0.1:8000'+route;
+ if(route==='/'){const f=courses.filter(c=>c[0].toLowerCase().includes(q.toLowerCase()));
+  pg.innerHTML=`<h3 style="margin-top:0">Halo, Mahasiswa! 👋</h3><input id="s" placeholder="filter mata kuliah…" value="${esc(q)}" oninput="q=this.value;draw();document.getElementById('s').focus()">`+f.map(c=>`<div class="li"><span>${esc(c[0])}</span><b>${c[1]} SKS</b></div>`).join('')+`<div class="sub" style="margin-top:8px">${f.length} dari ${courses.length} (@foreach dari array di route)</div>`}
+ else if(route==='/about')pg.innerHTML='<h3 style="margin-top:0">Tentang</h3><p>Aplikasi Laravel pertamaku, Pemrograman Web FMIPA UNIMED.</p><small class="sub">PageController@about</small>';
+ else if(route==='/contact')pg.innerHTML='<h3 style="margin-top:0">Kontak</h3><p>📧 kontak@contoh.test</p><small class="sub">PageController@contact</small>';
+ else{const n=window.nm||'Adid';u='http://127.0.0.1:8000/hello/'+encodeURIComponent(n);pg.innerHTML=`<h3 style="margin-top:0">Halo, ${esc(n)}! 👋</h3><input id="n" value="${esc(n)}"><br><br><button class="go" onclick="window.nm=document.getElementById('n').value||'Adid';draw()">Ubah nama</button>`}
+ document.getElementById('url').textContent=u;
+}
+drawSteps();
+</script>
+</body></html>
